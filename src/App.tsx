@@ -5,13 +5,13 @@ import classNames from 'classnames';
 
 import { FilterStatus } from './types/FilterStatus';
 import { createTodos, getTodos, patchTodo, USER_ID } from './api/todos';
+import { deleteTodo } from './api/todos';
 import { Todo } from './types/Todo';
 import { ErrorMessage } from './types/ErrorMessage';
 import { Header } from './components/header/Header';
 import { TodoList } from './components/TodoList/TodoList';
 import { Footer } from './components/Footer/Footer';
 import { TodoItem } from './components/TodoItem/TodoItem';
-import { deleteTodo } from './api/todos';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
