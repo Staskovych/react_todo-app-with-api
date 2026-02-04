@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect, useMemo, useState, useRef } from 'react';
-import classNames from 'classnames';
 
 import { FilterStatus } from './types/FilterStatus';
 import { createTodos, getTodos, patchTodo, USER_ID } from './api/todos';
@@ -12,6 +11,7 @@ import { Header } from './components/header/Header';
 import { TodoList } from './components/TodoList/TodoList';
 import { Footer } from './components/Footer/Footer';
 import { TodoItem } from './components/TodoItem/TodoItem';
+import { ErrorNotification } from './components/ErrorNotification';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -33,6 +33,10 @@ export const App: React.FC = () => {
     () => todos.filter(todo => todo.completed).length,
     [todos],
   );
+
+  const handleCloseError = () => {
+    setErrorMessage(ErrorMessage.Default);
+  };
 
   const handleShowError = (error: ErrorMessage) => {
     setErrorMessage(error);
@@ -195,16 +199,6 @@ export const App: React.FC = () => {
       .catch(() => setErrorMessage(ErrorMessage.LoadMessage));
   }, []);
 
-  useEffect(() => {
-    if (!errorMessage) {
-      return;
-    }
-
-    const timer = setTimeout(() => setErrorMessage(ErrorMessage.Default), 3000);
-
-    return () => clearTimeout(timer);
-  }, [errorMessage]);
-
   const visibleTodos = todos.filter(todo => {
     switch (filter) {
       case FilterStatus.Active:
@@ -213,6 +207,7 @@ export const App: React.FC = () => {
       case FilterStatus.Completed:
         return todo.completed;
 
+      case FilterStatus.All:
       default:
         return true;
     }
@@ -257,24 +252,10 @@ export const App: React.FC = () => {
           />
         )}
       </div>
-
-      <div
-        data-cy="ErrorNotification"
-        className={classNames(
-          'notification is-danger is-light has-text-weight-normal',
-          {
-            hidden: !errorMessage,
-          },
-        )}
-      >
-        <button
-          data-cy="HideErrorButton"
-          type="button"
-          className="delete"
-          onClick={() => setErrorMessage(ErrorMessage.Default)}
-        />
-        {errorMessage}
-      </div>
+      <ErrorNotification
+        errorMessage={errorMessage}
+        onCloseError={handleCloseError}
+      />
     </div>
   );
 };

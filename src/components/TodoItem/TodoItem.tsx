@@ -18,7 +18,7 @@ export const TodoItem: React.FC<Props> = ({
   isLoading,
   onPatch,
 }) => {
-  const [renameTitle, setRenameTitle] = useState(false);
+  const [changeTitle, setChangeTitle] = useState(false);
   const [newTitle, setNewTitle] = useState(todo.title);
 
   const handleToggleItem = (state: boolean) => {
@@ -37,15 +37,15 @@ export const TodoItem: React.FC<Props> = ({
     if (titleTrimmed === '') {
       onDelete(todo.id);
     } else if (titleTrimmed !== todo.title) {
-      onPatch(todo.id, updateTodo).then(() => setRenameTitle(false));
+      onPatch(todo.id, updateTodo).then(() => setChangeTitle(false));
     } else {
-      setRenameTitle(false);
+      setChangeTitle(false);
     }
   };
 
   return (
     <div
-      onDoubleClick={() => setRenameTitle(true)}
+      onDoubleClick={() => setChangeTitle(true)}
       data-cy="Todo"
       className={classNames('todo', {
         completed: todo.completed,
@@ -61,7 +61,7 @@ export const TodoItem: React.FC<Props> = ({
           readOnly
         />
       </label>
-      {renameTitle ? (
+      {changeTitle ? (
         <form
           onSubmit={event => {
             event.preventDefault();
@@ -71,7 +71,7 @@ export const TodoItem: React.FC<Props> = ({
           <input
             onKeyUp={event => {
               if (event.key === 'Escape') {
-                setRenameTitle(false);
+                setChangeTitle(false);
                 setNewTitle(todo.title);
               }
             }}
